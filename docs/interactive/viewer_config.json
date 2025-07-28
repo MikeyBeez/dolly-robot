@@ -1,0 +1,187 @@
+{
+  "viewer_config": {
+    "title": "Dolly Robot STEP File Viewer Configuration",
+    "description": "Configuration for displaying STEP files in documentation",
+    "viewer_options": [
+      {
+        "name": "Online CAD Viewer",
+        "url": "https://www.autodesk.com/viewer/",
+        "supports": ["STEP", "STL", "IGES"],
+        "embed_capable": false,
+        "notes": "Upload files to view, no embedding"
+      },
+      {
+        "name": "Three.js STEP Loader",
+        "package": "three-step-loader",
+        "embed_capable": true,
+        "implementation": "Custom WebGL viewer",
+        "notes": "Requires conversion to intermediate format"
+      },
+      {
+        "name": "OpenCascade.js",
+        "url": "https://github.com/donalffons/opencascade.js",
+        "embed_capable": true,
+        "notes": "Full STEP support in browser"
+      }
+    ]
+  },
+  "step_files": [
+    {
+      "category": "Assembly",
+      "files": [
+        {
+          "name": "dolly_complete_assembly.step",
+          "description": "Full robot assembly",
+          "size": "~2MB",
+          "complexity": "high",
+          "view_priority": 1,
+          "default_view": "isometric",
+          "highlight_features": [
+            "Mac Mini location",
+            "Belly door with USB",
+            "Modular arm mounts",
+            "Power station bay"
+          ]
+        },
+        {
+          "name": "dolly_frame_only.step",
+          "description": "Aluminum extrusion frame",
+          "size": "~500KB",
+          "complexity": "medium",
+          "view_priority": 2,
+          "default_view": "front",
+          "highlight_features": [
+            "2020 extrusion layout",
+            "Corner brackets",
+            "Mounting points"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Heavy Parts",
+      "files": [
+        {
+          "name": "dolly_main_base_plate.step",
+          "description": "Main structural base",
+          "material": "6mm aluminum",
+          "critical_features": [
+            "Motor mounting slots (different widths)",
+            "Caster mounting pattern",
+            "Weight reduction cutouts"
+          ]
+        },
+        {
+          "name": "dolly_mac_mini_security_plate.step",
+          "description": "Anti-vibration Mac mount",
+          "material": "Aluminum or PETG",
+          "critical_features": [
+            "Vibration damper holes",
+            "Cable management slot",
+            "Ventilation pattern"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "3D Printed",
+      "subcategories": [
+        {
+          "name": "Personality Shells",
+          "files": [
+            {
+              "name": "dolly_classic_head.step",
+              "style": "1950s Robot",
+              "print_time": "8 hours",
+              "customizable": true
+            },
+            {
+              "name": "dolly_friendly_head.step",
+              "style": "WALL-E inspired",
+              "print_time": "7 hours",
+              "customizable": true
+            }
+          ]
+        },
+        {
+          "name": "Grippers",
+          "files": [
+            {
+              "name": "dolly_circuit_gripper_fingers.step",
+              "purpose": "Electronics handling",
+              "material": "PLA + TPU tips",
+              "key_dimension": "3mm tip width"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category": "Tactile Design",
+      "files": [
+        {
+          "name": "dolly_tactile_base_plate.step",
+          "description": "Base with orientation features",
+          "tactile_features": [
+            "3 dots = front",
+            "Single line = back",
+            "Different slot widths",
+            "Raised corner rings (1-4)"
+          ]
+        },
+        {
+          "name": "dolly_orientation_key.step",
+          "description": "Universal orientation marker",
+          "tactile_features": [
+            "Arrow shape",
+            "Braille 'F' pattern"
+          ]
+        }
+      ]
+    }
+  ],
+  "rendering_suggestions": {
+    "colors": {
+      "aluminum_parts": "#C0C0C0",
+      "3d_printed_structural": "#404040",
+      "3d_printed_decorative": "#0099CC",
+      "tpu_parts": "#FF6B6B",
+      "electronics": "#4ECDC4"
+    },
+    "views": {
+      "assembly_sequence": [
+        "exploded_view",
+        "frame_only",
+        "frame_plus_base",
+        "add_electronics",
+        "add_covers",
+        "complete"
+      ]
+    },
+    "annotations": {
+      "show_dimensions": true,
+      "show_materials": true,
+      "show_assembly_order": true,
+      "highlight_tactile_features": true
+    }
+  },
+  "export_formats": {
+    "documentation": [
+      {
+        "format": "PDF",
+        "includes": "2D drawings with dimensions",
+        "generator": "FreeCAD or OpenSCAD"
+      },
+      {
+        "format": "HTML",
+        "includes": "Interactive 3D viewer",
+        "generator": "Three.js or OpenCascade.js"
+      },
+      {
+        "format": "Markdown",
+        "includes": "Static images + descriptions",
+        "generator": "CAD screenshot tool"
+      }
+    ]
+  }
+}

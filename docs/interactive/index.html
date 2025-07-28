@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dolly Robot - Interactive Parts Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 2px solid #0f4c75;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: #1a1a2e;
+            border: 2px solid #0f4c75;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            background: #16213e;
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            background: #0f4c75;
+            color: white;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .part-card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid #2a2a3e;
+        }
+        
+        .part-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+        
+        .part-visual {
+            height: 200px;
+            background: #0f0f1f;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .part-3d {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #0099cc;
+            position: relative;
+        }
+        
+        .part-3d::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 3px solid #0099cc;
+            border-radius: 12px;
+            transform: rotate(45deg);
+            opacity: 0.3;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(45deg); }
+            to { transform: rotate(405deg); }
+        }
+        
+        .part-info {
+            padding: 1.5rem;
+        }
+        
+        .part-info h3 {
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .part-specs {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #2a2a3e;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .spec-label {
+            color: #888;
+        }
+        
+        .assembly-step {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .step-number {
+            font-size: 3rem;
+            color: #0099cc;
+            font-weight: bold;
+            min-width: 60px;
+        }
+        
+        .step-visual {
+            width: 150px;
+            height: 150px;
+            background: #0f0f1f;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #0099cc;
+        }
+        
+        .step-content h4 {
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .material-card {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .material-card h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+        
+        .print-settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .setting-box {
+            background: #0f0f1f;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .setting-value {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+        
+        .setting-label {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
+        
+        .download-section {
+            background: #0f4c75;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #00d4ff;
+            color: #0a0a0a;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        .touch-guide {
+            background: #16213e;
+            border-left: 4px solid #00d4ff;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .touch-guide h4 {
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Dolly Robot</h1>
+        <p>Interactive Parts Catalog & Assembly Guide</p>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="showSection('overview')">Overview</div>
+            <div class="tab" onclick="showSection('frame')">Frame Parts</div>
+            <div class="tab" onclick="showSection('printed')">3D Printed</div>
+            <div class="tab" onclick="showSection('assembly')">Assembly</div>
+            <div class="tab" onclick="showSection('materials')">Materials</div>
+        </div>
+        
+        <!-- Overview Section -->
+        <div id="overview" class="content-section active">
+            <h2>Welcome to Dolly Robot</h2>
+            <p>An open-source modular robot designed with accessibility in mind.</p>
+            
+            <div class="parts-grid">
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">🤖</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Complete Assembly</h3>
+                        <p>24" tall modular robot with Mac Mini brain</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Height:</span>
+                                <span>610mm (24")</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Weight:</span>
+                                <span>~15 lbs</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Power:</span>
+                                <span>Solar Generator</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">🔧</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Modular Design</h3>
+                        <p>Swap frames for different tasks</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Frames:</span>
+                                <span>Circuit Builder</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Future:</span>
+                                <span>Cleaning, Garden</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">🎨</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Customizable</h3>
+                        <p>3D print your own personality</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Shells:</span>
+                                <span>4 Designs</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Tools:</span>
+                                <span>Quick-change</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="touch-guide">
+                <h4>🤚 Tactile Design Philosophy</h4>
+                <p>Every part is designed with clear orientation features:</p>
+                <ul>
+                    <li>Asymmetric mounting holes prevent incorrect assembly</li>
+                    <li>Different sized tabs indicate front/back orientation</li>
+                    <li>Textured surfaces show grip areas</li>
+                    <li>Rounded edges guide cable routing</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Frame Parts Section -->
+        <div id="frame" class="content-section">
+            <h2>Frame Structure</h2>
+            <p>Built with standard 2020 aluminum extrusion for strength and modularity.</p>
+            
+            <div class="parts-grid">
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">▦</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Base Plate</h3>
+                        <p>Main structural foundation with motor mounts</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Material:</span>
+                                <span>6mm Aluminum</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Size:</span>
+                                <span>280 × 230mm</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Features:</span>
+                                <span>Adjustable slots</span>
+                            </div>
+                        </div>
+                        <div class="touch-guide" style="margin-top: 1rem;">
+                            <p><strong>Touch Guide:</strong> Front has wider slots, back has circular pattern</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">⬚</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Mac Mini Mount</h3>
+                        <p>Anti-vibration mounting with cooling</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Material:</span>
+                                <span>Aluminum/PETG</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Cooling:</span>
+                                <span>Ventilation slots</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">⚡</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Power Station Bracket</h3>
+                        <p>Universal mount for portable power</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Type:</span>
+                                <span>L-bracket</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Adjust:</span>
+                                <span>Multiple slots</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D Printed Parts Section -->
+        <div id="printed" class="content-section">
+            <h2>3D Printed Parts</h2>
+            <p>Customizable components - make Dolly uniquely yours!</p>
+            
+            <h3 style="margin-top: 2rem; color: #00d4ff;">Personality Shells</h3>
+            <div class="parts-grid">
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">🎭</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Classic Robot</h3>
+                        <p>1950s sci-fi aesthetic with antenna mounts</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Print Time:</span>
+                                <span>8 hours</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Material:</span>
+                                <span>PLA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">😊</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Friendly Face</h3>
+                        <p>WALL-E inspired with big eyes</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Features:</span>
+                                <span>Eye sockets</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Kids love:</span>
+                                <span>Yes!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">⚙️</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Industrial</h3>
+                        <p>Functional design with sensor rails</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Mounts:</span>
+                                <span>Universal</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Cooling:</span>
+                                <span>Integrated</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 2rem; color: #00d4ff;">Gripper Designs</h3>
+            <div class="parts-grid">
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">🤏</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Circuit Fingers</h3>
+                        <p>Precision tips for components</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Tip Width:</span>
+                                <span>3mm</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Material:</span>
+                                <span>PLA + TPU tip</span>
+                            </div>
+                        </div>
+                        <div class="touch-guide" style="margin-top: 1rem;">
+                            <p><strong>Touch Guide:</strong> Grooved texture on grip surface</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-visual">
+                        <div class="part-3d">🧤</div>
+                    </div>
+                    <div class="part-info">
+                        <h3>Soft Fingers</h3>
+                        <p>Flexible TPU for delicate items</p>
+                        <div class="part-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Flexibility:</span>
+                                <span>Shore 95A</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Features:</span>
+                                <span>Suction cups</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assembly Section -->
+        <div id="assembly" class="content-section">
+            <h2>Assembly Guide</h2>
+            <p>Step-by-step instructions with tactile references</p>
+            
+            <div class="assembly-step">
+                <div class="step-number">1</div>
+                <div class="step-visual">📐</div>
+                <div class="step-content">
+                    <h4>Frame Assembly</h4>
+                    <p>Connect the 2020 extrusions using corner brackets. The base rectangle should have the longer sides (300mm) running left-right.</p>
+                    <div class="touch-guide" style="margin-top: 0.5rem;">
+                        <p><strong>Touch Check:</strong> Run your hand along the frame - smooth sides face outward, T-slots face inward.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assembly-step">
+                <div class="step-number">2</div>
+                <div class="step-visual">🔩</div>
+                <div class="step-content">
+                    <h4>Mount Base Plate</h4>
+                    <p>The base plate has asymmetric holes - the wider pattern goes toward the front (where the belly door will be).</p>
+                    <div class="touch-guide" style="margin-top: 0.5rem;">
+                        <p><strong>Touch Check:</strong> Feel for the two different slot patterns - longer slots are for motor adjustment.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assembly-step">
+                <div class="step-number">3</div>
+                <div class="step-visual">⚙️</div>
+                <div class="step-content">
+                    <h4>Install Motors</h4>
+                    <p>NEMA 17 motors mount with the wires facing inward. The shaft should protrude through the base plate.</p>
+                    <div class="touch-guide" style="margin-top: 0.5rem;">
+                        <p><strong>Touch Check:</strong> Motor shaft has a flat side - this should face the set screw hole in your wheel hub.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assembly-step">
+                <div class="step-number">4</div>
+                <div class="step-visual">💻</div>
+                <div class="step-content">
+                    <h4>Mac Mini Installation</h4>
+                    <p>Place rubber dampers in the mount corners first, then lower the Mac Mini with ports facing the rear.</p>
+                    <div class="touch-guide" style="margin-top: 0.5rem;">
+                        <p><strong>Touch Check:</strong> The power button should be accessible from the right side when facing the robot.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Materials Section -->
+        <div id="materials" class="content-section">
+            <h2>Materials & Settings</h2>
+            <p>Recommended materials and print settings for each component type</p>
+            
+            <div class="material-card">
+                <h3>Structural Parts</h3>
+                <p>Parts that bear load or experience stress</p>
+                <div class="print-settings">
+                    <div class="setting-box">
+                        <div class="setting-value">PETG</div>
+                        <div class="setting-label">Material</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">0.2mm</div>
+                        <div class="setting-label">Layer Height</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">60%</div>
+                        <div class="setting-label">Infill</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">4</div>
+                        <div class="setting-label">Walls</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="material-card">
+                <h3>Decorative Parts</h3>
+                <p>Personality shells and aesthetic components</p>
+                <div class="print-settings">
+                    <div class="setting-box">
+                        <div class="setting-value">PLA</div>
+                        <div class="setting-label">Material</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">0.2mm</div>
+                        <div class="setting-label">Layer Height</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">20%</div>
+                        <div class="setting-label">Infill</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">2</div>
+                        <div class="setting-label">Walls</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="material-card">
+                <h3>Flexible Parts</h3>
+                <p>Gripper fingers and bumpers</p>
+                <div class="print-settings">
+                    <div class="setting-box">
+                        <div class="setting-value">TPU</div>
+                        <div class="setting-label">Material</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">0.2mm</div>
+                        <div class="setting-label">Layer Height</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">30%</div>
+                        <div class="setting-label">Infill</div>
+                    </div>
+                    <div class="setting-box">
+                        <div class="setting-value">25mm/s</div>
+                        <div class="setting-label">Speed</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <h3>Download Files</h3>
+                <p>All CAD files are parametric and can be customized</p>
+                <a href="https://github.com/MikeyBeez/dolly-robot/tree/master/hardware/cad" class="download-btn">CADQuery Sources</a>
+                <a href="https://github.com/MikeyBeez/dolly-robot/tree/master/hardware/stl" class="download-btn">STL Files</a>
+                <a href="https://github.com/MikeyBeez/dolly-robot/tree/master/hardware/step" class="download-btn">STEP Files</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Mark the clicked tab as active
+            event.target.classList.add('active');
+        }
+        
+        // Add some interactive animations
+        document.querySelectorAll('.part-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const visual = this.querySelector('.part-3d');
+                visual.style.transform = 'scale(1.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                const visual = this.querySelector('.part-3d');
+                visual.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
