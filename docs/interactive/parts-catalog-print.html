@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dolly Robot - Parts Catalog PDF</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 15mm;
+        }
+        
+        @media print {
+            .page-break { 
+                page-break-after: always; 
+            }
+            .no-print {
+                display: none;
+            }
+            body {
+                font-size: 10pt;
+            }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #0099cc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #0099cc;
+            margin: 0;
+            font-size: 36pt;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14pt;
+            margin-top: 10px;
+        }
+        
+        .part-page {
+            margin-bottom: 30px;
+        }
+        
+        .part-header {
+            background: #f0f0f0;
+            padding: 15px;
+            border-left: 5px solid #0099cc;
+            margin-bottom: 20px;
+        }
+        
+        .part-header h2 {
+            margin: 0;
+            color: #333;
+            font-size: 24pt;
+        }
+        
+        .part-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .views-section {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .view-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .view-box {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .view-box h4 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 10pt;
+        }
+        
+        .view-placeholder {
+            width: 100%;
+            height: 150px;
+            background: #eee;
+            border: 1px dashed #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48pt;
+            color: #ccc;
+        }
+        
+        .specs-section {
+            background: white;
+        }
+        
+        .specs-section h3 {
+            color: #0099cc;
+            margin-top: 0;
+            font-size: 14pt;
+            border-bottom: 2px solid #0099cc;
+            padding-bottom: 5px;
+        }
+        
+        .spec-group {
+            margin-bottom: 20px;
+        }
+        
+        .spec-group h4 {
+            color: #666;
+            margin: 10px 0 5px 0;
+            font-size: 11pt;
+        }
+        
+        .spec-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .spec-list li {
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .spec-label {
+            color: #666;
+        }
+        
+        .spec-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .features-box {
+            background: #e8f4f8;
+            border: 1px solid #b3d9e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .features-box h4 {
+            color: #0099cc;
+            margin: 0 0 10px 0;
+        }
+        
+        .assembly-notes {
+            background: #fff9e6;
+            border: 1px solid #e6d9a6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .assembly-notes h4 {
+            color: #996600;
+            margin: 0 0 10px 0;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #0099cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14pt;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:hover {
+            background: #0077aa;
+        }
+        
+        .toc {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .toc h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .toc li {
+            padding: 5px 0;
+        }
+        
+        .toc a {
+            color: #0099cc;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">
+        📄 Print to PDF
+    </button>
+    
+    <!-- Cover Page -->
+    <div class="header">
+        <h1>Dolly Robot</h1>
+        <div class="subtitle">Technical Parts Catalog</div>
+        <div style="margin-top: 20px; color: #666;">
+            Open Source Modular Robot<br>
+            Version 1.0<br>
+            Generated: <span id="date"></span>
+        </div>
+    </div>
+    
+    <!-- Table of Contents -->
+    <div class="toc no-print">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#assembly">1. Complete Assembly</a></li>
+            <li><a href="#frame">2. Frame Structure</a></li>
+            <li><a href="#base-plate">3. Base Plate</a></li>
+            <li><a href="#mac-mount">4. Mac Mini Mount</a></li>
+            <li><a href="#power-bracket">5. Power Station Bracket</a></li>
+            <li><a href="#grippers">6. Gripper System</a></li>
+        </ul>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- Part 1: Complete Assembly -->
+    <div id="assembly" class="part-page">
+        <div class="part-header">
+            <h2>1. Complete Assembly</h2>
+        </div>
+        
+        <div class="part-content">
+            <div class="views-section">
+                <h3>Technical Views</h3>
+                <div class="view-grid">
+                    <div class="view-box">
+                        <h4>Front View</h4>
+                        <div class="view-placeholder">🤖</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Side View</h4>
+                        <div class="view-placeholder">🤖</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Top View</h4>
+                        <div class="view-placeholder">⬜</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Isometric View</h4>
+                        <div class="view-placeholder">📦</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="specs-section">
+                <h3>Specifications</h3>
+                
+                <div class="spec-group">
+                    <h4>Dimensions</h4>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Height:</span>
+                            <span class="spec-value">610mm (24")</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Width:</span>
+                            <span class="spec-value">300mm (11.8")</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Depth:</span>
+                            <span class="spec-value">250mm (9.8")</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Weight:</span>
+                            <span class="spec-value">~6.8kg (15 lbs)</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="spec-group">
+                    <h4>Components</h4>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Frame:</span>
+                            <span class="spec-value">2020 Aluminum</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Brain:</span>
+                            <span class="spec-value">Mac Mini M2</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Power:</span>
+                            <span class="spec-value">300Wh Solar Gen</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Motors:</span>
+                            <span class="spec-value">8× NEMA 17</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="features-box">
+                    <h4>Key Features</h4>
+                    <ul>
+                        <li>• Modular frame system</li>
+                        <li>• Hot-swappable power</li>
+                        <li>• USB belly door access</li>
+                        <li>• Quick-change grippers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- Part 2: Frame Structure -->
+    <div id="frame" class="part-page">
+        <div class="part-header">
+            <h2>2. Frame Structure</h2>
+        </div>
+        
+        <div class="part-content">
+            <div class="views-section">
+                <h3>Technical Views</h3>
+                <div class="view-grid">
+                    <div class="view-box">
+                        <h4>Front View</h4>
+                        <div class="view-placeholder">⬚</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Side View</h4>
+                        <div class="view-placeholder">▭</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Top View</h4>
+                        <div class="view-placeholder">⬜</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Exploded View</h4>
+                        <div class="view-placeholder">⚡</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="specs-section">
+                <h3>Specifications</h3>
+                
+                <div class="spec-group">
+                    <h4>Extrusion Cut List</h4>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Vertical Posts:</span>
+                            <span class="spec-value">4× 600mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Base Width:</span>
+                            <span class="spec-value">4× 300mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Base Depth:</span>
+                            <span class="spec-value">4× 250mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Cross Braces:</span>
+                            <span class="spec-value">2× 200mm</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="assembly-notes">
+                    <h4>Assembly Notes</h4>
+                    <ul>
+                        <li>• Use corner brackets at all joints</li>
+                        <li>• T-slots face inward</li>
+                        <li>• Level base before tightening</li>
+                        <li>• Pre-load T-nuts in channels</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <!-- Part 3: Base Plate -->
+    <div id="base-plate" class="part-page">
+        <div class="part-header">
+            <h2>3. Base Plate</h2>
+        </div>
+        
+        <div class="part-content">
+            <div class="views-section">
+                <h3>Technical Views</h3>
+                <div class="view-grid">
+                    <div class="view-box">
+                        <h4>Top View</h4>
+                        <div class="view-placeholder">▦</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Bottom View</h4>
+                        <div class="view-placeholder">▨</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Section A-A</h4>
+                        <div class="view-placeholder">━</div>
+                    </div>
+                    <div class="view-box">
+                        <h4>Detail View</h4>
+                        <div class="view-placeholder">⊡</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="specs-section">
+                <h3>Specifications</h3>
+                
+                <div class="spec-group">
+                    <h4>Material & Dimensions</h4>
+                    <ul class="spec-list">
+                        <li>
+                            <span class="spec-label">Material:</span>
+                            <span class="spec-value">6mm Aluminum</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Size:</span>
+                            <span class="spec-value">280 × 230mm</span>
+                        </li>
+                        <li>
+                            <span class="spec-label">Weight:</span>
+                            <span class="spec-value">~450g</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="features-box">
+                    <h4>Tactile Features</h4>
+                    <ul>
+                        <li>• 3 raised dots = front orientation</li>
+                        <li>• Single line = rear orientation</li>
+                        <li>• Different slot widths (L: 10mm, R: 8mm)</li>
+                        <li>• Corner rings: 1-4 for identification</li>
+                    </ul>
+                </div>
+                
+                <div class="assembly-notes">
+                    <h4>Manufacturing Notes</h4>
+                    <ul>
+                        <li>• Deburr all edges</li>
+                        <li>• Countersink holes 0.5mm</li>
+                        <li>• Tolerance: ±0.1mm on critical dims</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Set current date
+        document.getElementById('date').textContent = new Date().toLocaleDateString();
+        
+        // Print instructions
+        window.onload = function() {
+            if (window.location.search.includes('print=true')) {
+                setTimeout(function() {
+                    window.print();
+                }, 1000);
+            }
+        };
+    </script>
+</body>
+</html>
