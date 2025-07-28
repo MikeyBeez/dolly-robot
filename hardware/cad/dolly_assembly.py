@@ -221,19 +221,53 @@ class DollyRobotAssembly:
         
         return robot
 
-# Generate the complete assembly
+# Generate all parts
 if __name__ == "__main__":
-    print("Generating Dolly robot complete assembly...")
-    
     dolly = DollyRobotAssembly()
     complete_robot = dolly.assemble_robot()
     
-    # Export the complete assembly
-    cq.exporters.export(complete_robot, "dolly_complete_assembly.step")
-    cq.exporters.export(complete_robot, "dolly_complete_assembly.stl")
+    # Create directories
+    import os
+    for dir in ['hardware/step', 'hardware/stl', 'hardware/svg']:
+        os.makedirs(dir, exist_ok=True)
     
-    print("Assembly files created:")
-    print("  - dolly_complete_assembly.step")
-    print("  - dolly_complete_assembly.stl")
-    print("\nThis is a simplified representation.")
-    print("See individual component files in hardware/cad/ for detailed parts.")
+    # Export in multiple formats
+    print("Generating Dolly robot complete assembly...")
+    
+    # STEP for CAD
+    cq.exporters.export(complete_robot, "hardware/step/dolly_complete_assembly.step")
+    print("  ✓ STEP file (CAD exchange)")
+    
+    # STL for 3D printing
+    cq.exporters.export(complete_robot, "hardware/stl/dolly_complete_assembly.stl")
+    print("  ✓ STL file (3D printing)")
+    
+    # SVG views for documentation
+    views = [
+        ('top', (0, 0, 1)),
+        ('front', (1, 0, 0)),
+        ('side', (0, 1, 0)),
+        ('iso', (1, 1, 1))
+    ]
+    
+    for view_name, direction in views:
+        cq.exporters.export(
+            complete_robot,
+            f"hardware/svg/dolly_assembly_{view_name}.svg",
+            opt={
+                "projectionDir": direction,
+                "width": 1000,
+                "height": 800,
+                "marginLeft": 100,
+                "marginTop": 100,
+                "showAxes": True,
+                "showHidden": False
+            }
+        )
+        print(f"  ✓ SVG {view_name} view")
+    
+    print("\nAll files generated!")
+    print("\nViewing options:")
+    print("  - STEP: Use FreeCAD or online viewers")
+    print("  - STL: Use any 3D printing slicer")
+    print("  - SVG: Open directly in your web browser!")
