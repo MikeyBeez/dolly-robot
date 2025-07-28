@@ -6,6 +6,8 @@
 
 Dolly is a 2-foot tall modular robot designed for delicate tasks like circuit building, with the ability to swap into larger frames for different applications. Powered by a Mac Mini and portable solar generators, Dolly represents a new approach to accessible, repairable robotics.
 
+https://medium.com/@mbonsign/the-3-month-gap-how-ai-went-from-drawing-dots-to-designing-robots-fe38315c959b  
+
 ## ✨ Key Features
 
 - **Mac Mini Brain**: Full computing power in a compact robot
